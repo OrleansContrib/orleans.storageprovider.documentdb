@@ -28,8 +28,9 @@ namespace Orleans.StorageProvider.DocumentDB
                 
                 this.Client = new DocumentClient(new Uri(url), key);
 
-                var existingDatabase = this.Client.CreateDatabaseQuery().Where(d => d.Id == databaseName).ToArray().FirstOrDefault();
-                this.Database = existingDatabase ?? await this.Client.CreateDatabaseAsync(new Database { Id = databaseName });
+                var databases = await this.Client.ReadDatabaseFeedAsync();
+                this.Database = databases.Where(d => d.Id == databaseName).FirstOrDefault()
+                    ?? await this.Client.CreateDatabaseAsync(new Database { Id = databaseName });
             }
             catch (Exception ex)
             {
@@ -92,8 +93,10 @@ namespace Orleans.StorageProvider.DocumentDB
 
         private async Task<DocumentCollection> EnsureCollection(string collectionId)
         {
-            return this.Client.CreateDocumentCollectionQuery(this.Database.SelfLink).Where(c => c.Id == collectionId).ToArray().FirstOrDefault() ??
-                await Client.CreateDocumentCollectionAsync(this.Database.SelfLink, new DocumentCollection { Id = collectionId });
+            var collections = await this.Client.ReadDocumentCollectionFeedAsync(this.Database.CollectionsLink);
+            
+            return collections.Where(c => c.Id == collectionId).FirstOrDefault()
+                ?? await this.Client.CreateDocumentCollectionAsync(this.Database.SelfLink, new DocumentCollection { Id = collectionId });
         }
 
         private class GrainStateDocument
