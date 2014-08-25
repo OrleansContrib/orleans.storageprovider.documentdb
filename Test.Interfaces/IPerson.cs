@@ -20,14 +20,11 @@ using Orleans;
 
 namespace Test.Interfaces
 {
-    public enum GenderType {  Male, Female }
-
     [Serializable]
     public class PersonalAttributes
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public GenderType Gender { get; set; }
     }
 
     /// <summary>
@@ -40,7 +37,6 @@ namespace Test.Interfaces
 
         Task<string> FirstName { get; }
         Task<string> LastName { get; }
-        Task<GenderType> Gender { get; }
         Task<bool> IsMarried { get; }
     }
 }

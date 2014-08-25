@@ -112,15 +112,6 @@ namespace Test.Interfaces
                 }
             }
             
-            public System.Threading.Tasks.Task<Test.Interfaces.GenderType> Gender
-            {
-                get
-                {
-
-                return base.InvokeMethodAsync<Test.Interfaces.GenderType>(871790933, new object[] {}, TimeSpan.Zero , options: InvokeMethodOptions.ReadOnly);
-                }
-            }
-            
             public System.Threading.Tasks.Task<bool> IsMarried
             {
                 get
@@ -196,8 +187,6 @@ namespace Test.Interfaces
                                 return await ((IPerson)grain).FirstName;
                             case 60938995: 
                                 return await ((IPerson)grain).LastName;
-                            case 871790933: 
-                                return await ((IPerson)grain).Gender;
                             case 1174613038: 
                                 return await ((IPerson)grain).IsMarried;
                             case -606142484: return ((IPerson)grain).GetProperties();
@@ -226,8 +215,6 @@ namespace Test.Interfaces
                             return "get_FirstName";
                     case 60938995:
                             return "get_LastName";
-                    case 871790933:
-                            return "get_Gender";
                     case 1174613038:
                             return "get_IsMarried";
                     case -606142484:
@@ -266,14 +253,12 @@ static public System.Threading.Tasks.Task<PersonProperties> GetProperties(this I
 
             public String FirstName { get; set; }
             public String LastName { get; set; }
-            public GenderType Gender { get; set; }
             public Boolean IsMarried { get; set; }
             public Dictionary<string,object> AsDictionary()
             {  
                 var retValue = new Dictionary<string,object>();
                 retValue["FirstName"] = FirstName;
                 retValue["LastName"] = LastName;
-                retValue["Gender"] = Gender;
                 retValue["IsMarried"] = IsMarried;
                 return retValue;
             }
@@ -294,7 +279,6 @@ static public System.Threading.Tasks.Task<PersonProperties> GetProperties(this I
             Test.Interfaces.PersonalAttributes result = new Test.Interfaces.PersonalAttributes();
             Orleans.Serialization.SerializationContext.Current.RecordObject(original, result);
             result.FirstName = input.FirstName;
-            result.Gender = input.Gender;
             result.LastName = input.LastName;
             return result;
         }
@@ -303,7 +287,6 @@ static public System.Threading.Tasks.Task<PersonProperties> GetProperties(this I
         {
             Test.Interfaces.PersonalAttributes input = ((Test.Interfaces.PersonalAttributes)(untypedInput));
             Orleans.Serialization.SerializationManager.SerializeInner(input.FirstName, stream, typeof(String));
-            Orleans.Serialization.SerializationManager.SerializeInner(input.Gender, stream, typeof(GenderType));
             Orleans.Serialization.SerializationManager.SerializeInner(input.LastName, stream, typeof(String));
         }
         
@@ -311,7 +294,6 @@ static public System.Threading.Tasks.Task<PersonProperties> GetProperties(this I
         {
             Test.Interfaces.PersonalAttributes result = new Test.Interfaces.PersonalAttributes();
             result.FirstName = ((String)(Orleans.Serialization.SerializationManager.DeserializeInner(typeof(String), stream)));
-            result.Gender = ((GenderType)(Orleans.Serialization.SerializationManager.DeserializeInner(typeof(GenderType), stream)));
             result.LastName = ((String)(Orleans.Serialization.SerializationManager.DeserializeInner(typeof(String), stream)));
             return result;
         }

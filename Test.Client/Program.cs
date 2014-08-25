@@ -32,7 +32,7 @@ namespace Test.Client
             AppDomain hostDomain = AppDomain.CreateDomain("OrleansHost", null, new AppDomainSetup
             {
                 AppDomainInitializer = InitSilo,
-                AppDomainInitializerArguments = args,
+                AppDomainInitializerArguments = args                
             });
 
             Orleans.OrleansClient.Initialize("DevTestClientConfiguration.xml");
@@ -42,7 +42,7 @@ namespace Test.Client
             // If the name is set, we've run this code before.
             if (maleGrain.FirstName.Result == null)
             {
-                maleGrain.Register(new PersonalAttributes { FirstName = "John", LastName = "Doe", Gender = GenderType.Male }).Wait();
+                maleGrain.Register(new PersonalAttributes { FirstName = "John", LastName = "Doe"}).Wait();
                 Console.WriteLine("We just wrote something to the persistent store (Id: {0}). Please verify!", maleGrain.GetPrimaryKey());
             }
             else
@@ -50,7 +50,7 @@ namespace Test.Client
                 Console.WriteLine("\n\nThis was found in the persistent store: {0}, {1}, {2}\n\n",
                     maleGrain.FirstName.Result,
                     maleGrain.LastName.Result,
-                    maleGrain.Gender.Result.ToString());
+                    maleGrain.IsMarried.Result);
             }
 
             var femaleGrain = PersonFactory.GetGrain(2);
@@ -58,7 +58,7 @@ namespace Test.Client
             // If the name is set, we've run this code before.
             if (femaleGrain.FirstName.Result == null)
             {
-                femaleGrain.Register(new PersonalAttributes { FirstName = "Alice", LastName = "Williams", Gender = GenderType.Female }).Wait();
+                femaleGrain.Register(new PersonalAttributes { FirstName = "Alice", LastName = "Williams" }).Wait();
                 Console.WriteLine("We just wrote something to the persistent store (Id: {0}). Please verify!", femaleGrain.GetPrimaryKey());
             }
             else
@@ -66,7 +66,7 @@ namespace Test.Client
                 Console.WriteLine("\n\nThis was found in the persistent store: {0}, {1}, {2}\n\n",
                     femaleGrain.FirstName.Result,
                     femaleGrain.LastName.Result,
-                    femaleGrain.Gender.Result.ToString());
+                    femaleGrain.IsMarried.Result);
             }
 
             femaleGrain.Marry(maleGrain.GetPrimaryKey(), maleGrain.LastName.Result);

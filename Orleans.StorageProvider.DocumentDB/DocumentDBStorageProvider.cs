@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
-using Microsoft.Azure.Documents.Linq; 
+using Microsoft.Azure.Documents.Linq;
+using Newtonsoft.Json;
 using Orleans.Storage;
 
 namespace Orleans.StorageProvider.DocumentDB
@@ -50,9 +51,12 @@ namespace Orleans.StorageProvider.DocumentDB
             try
             {
                 var collection = await this.EnsureCollection(grainType);
-                var document = this.Client.CreateDocumentQuery<GrainStateDocument>(collection.DocumentsLink).Where(d => d.Id == grainReference.ToKeyString()).AsEnumerable().FirstOrDefault();
+                var documents = await this.Client.ReadDocumentFeedAsync(collection.DocumentsLink);
+                var documentId = grainReference.ToKeyString();
+                GrainStateDocument document = documents.Where(d => d.Id == documentId).FirstOrDefault();
 
-                grainState.SetAll(document.State);
+                if(document != null)
+                    grainState.SetAll(document.State);
             }
             catch (Exception ex)
             {
@@ -65,9 +69,21 @@ namespace Orleans.StorageProvider.DocumentDB
             try
             {
                 var collection = await this.EnsureCollection(grainType);
-                var document = new GrainStateDocument { Id = grainReference.ToKeyString(), State = grainState.AsDictionary() };
+                var documents = await this.Client.ReadDocumentFeedAsync(collection.DocumentsLink);
+                var documentId = grainReference.ToKeyString();
 
-                await this.Client.CreateDocumentAsync(collection.DocumentsLink, document);
+                var document = documents.Where(d => d.Id == documentId).FirstOrDefault();
+
+                if(document != null)
+                {
+                    document.State = grainState.AsDictionary();
+                    await this.Client.ReplaceDocumentAsync(document);
+                }
+                else
+                {
+                    await this.Client.CreateDocumentAsync(collection.DocumentsLink,
+                        new GrainStateDocument { Id = documentId, State = grainState.AsDictionary() });
+                }
             }
             catch (Exception ex)
             {
@@ -101,6 +117,7 @@ namespace Orleans.StorageProvider.DocumentDB
 
         private class GrainStateDocument
         {
+            [JsonProperty("id")]
             public string Id;
             public Dictionary<string, object> State;
         }

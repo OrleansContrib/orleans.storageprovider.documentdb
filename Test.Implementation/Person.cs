@@ -30,7 +30,6 @@ namespace Test.Implementation
         {
             this.State.FirstName = props.FirstName;
             this.State.LastName = props.LastName;
-            this.State.Gender = props.Gender;
 
             return this.State.WriteStateAsync();
         }
@@ -53,11 +52,6 @@ namespace Test.Implementation
             get { return Task.FromResult(State.LastName); }
         }
 
-        Task<GenderType> IPerson.Gender
-        {
-            get { return Task.FromResult(State.Gender); }
-        }
-
         Task<bool> IPerson.IsMarried
         {
             get { return Task.FromResult(State.IsMarried); }
@@ -68,7 +62,6 @@ namespace Test.Implementation
     {
         string FirstName { get; set; }
         string LastName { get; set; }
-        GenderType Gender { get; set; }
         bool IsMarried { get; set; }
     }
 }
