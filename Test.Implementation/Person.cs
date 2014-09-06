@@ -20,11 +20,12 @@ using System.Threading.Tasks;
 using System.Text;
 using Orleans;
 using Test.Interfaces;
+using Orleans.Providers;
 
 namespace Test.Implementation
 {
     [StorageProvider(ProviderName = "DocumentDBStore")]
-    public class Person : GrainBase<IPersonState>, Test.Interfaces.IPerson
+    public class Person : Grain<IPersonState>, Test.Interfaces.IPerson
     {
         Task IPerson.Register(PersonalAttributes props)
         {
@@ -42,19 +43,19 @@ namespace Test.Implementation
             return this.State.WriteStateAsync();
         }
 
-        Task<string> IPerson.FirstName
+        Task<string> IPerson.GetFirstName()
         {
-            get { return Task.FromResult(State.FirstName); }
+            return Task.FromResult(State.FirstName);
         }
 
-        Task<string> IPerson.LastName
+        Task<string> IPerson.GetLastName()
         {
-            get { return Task.FromResult(State.LastName); }
+            return Task.FromResult(State.LastName);
         }
 
-        Task<bool> IPerson.IsMarried
+        Task<bool> IPerson.GetIsMarried()
         {
-            get { return Task.FromResult(State.IsMarried); }
+            return Task.FromResult(State.IsMarried);
         }
     }
 

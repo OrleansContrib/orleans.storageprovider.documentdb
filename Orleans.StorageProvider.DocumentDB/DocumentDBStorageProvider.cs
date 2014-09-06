@@ -7,6 +7,7 @@ using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 using Newtonsoft.Json;
+using Orleans.Runtime;
 using Orleans.Storage;
 
 namespace Orleans.StorageProvider.DocumentDB
@@ -91,7 +92,7 @@ namespace Orleans.StorageProvider.DocumentDB
             }
         }
 
-        public async Task ClearStateAsync(string grainType, GrainReference grainReference, GrainState grainState)
+        public async Task ClearStateAsync(string grainType, GrainReference grainReference, IGrainState grainState)
         {
             try
             {
@@ -119,7 +120,7 @@ namespace Orleans.StorageProvider.DocumentDB
         {
             [JsonProperty("id")]
             public string Id;
-            public Dictionary<string, object> State;
+            public IDictionary<string, object> State;
         }
     }
 }

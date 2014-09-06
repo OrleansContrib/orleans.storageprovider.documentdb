@@ -37,10 +37,10 @@ namespace Test.Client
 
             Orleans.OrleansClient.Initialize("DevTestClientConfiguration.xml");
 
-            var maleGrain = PersonFactory.GetGrain(1);
+            var maleGrain = GrainFactory.GetGrain<IPerson>(1);
 
             // If the name is set, we've run this code before.
-            if (maleGrain.FirstName.Result == null)
+            if (maleGrain.GetFirstName().Result == null)
             {
                 maleGrain.Register(new PersonalAttributes { FirstName = "John", LastName = "Doe"}).Wait();
                 Console.WriteLine("We just wrote something to the persistent store (Id: {0}). Please verify!", maleGrain.GetPrimaryKey());
@@ -48,15 +48,15 @@ namespace Test.Client
             else
             {
                 Console.WriteLine("\n\nThis was found in the persistent store: {0}, {1}, {2}\n\n",
-                    maleGrain.FirstName.Result,
-                    maleGrain.LastName.Result,
-                    maleGrain.IsMarried.Result);
+                    maleGrain.GetFirstName().Result,
+                    maleGrain.GetLastName().Result,
+                    maleGrain.GetIsMarried().Result);
             }
 
-            var femaleGrain = PersonFactory.GetGrain(2);
+            var femaleGrain = GrainFactory.GetGrain<IPerson>(2);
 
             // If the name is set, we've run this code before.
-            if (femaleGrain.FirstName.Result == null)
+            if (femaleGrain.GetFirstName().Result == null)
             {
                 femaleGrain.Register(new PersonalAttributes { FirstName = "Alice", LastName = "Williams" }).Wait();
                 Console.WriteLine("We just wrote something to the persistent store (Id: {0}). Please verify!", femaleGrain.GetPrimaryKey());
@@ -64,12 +64,12 @@ namespace Test.Client
             else
             {
                 Console.WriteLine("\n\nThis was found in the persistent store: {0}, {1}, {2}\n\n",
-                    femaleGrain.FirstName.Result,
-                    femaleGrain.LastName.Result,
-                    femaleGrain.IsMarried.Result);
+                    femaleGrain.GetFirstName().Result,
+                    femaleGrain.GetLastName().Result,
+                    femaleGrain.GetIsMarried().Result);
             }
 
-            femaleGrain.Marry(maleGrain.GetPrimaryKey(), maleGrain.LastName.Result);
+            femaleGrain.Marry(maleGrain.GetPrimaryKey(), maleGrain.GetLastName().Result);
 
             Console.WriteLine("Orleans Silo is running.\nPress Enter to terminate...");
             Console.ReadLine();

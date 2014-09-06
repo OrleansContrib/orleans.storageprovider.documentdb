@@ -30,13 +30,13 @@ namespace Test.Interfaces
     /// <summary>
     /// Orleans grain communication interface IPerson
     /// </summary>
-    public interface IPerson : Orleans.IGrain
+    public interface IPerson : Orleans.IGrainWithIntegerKey
     {
         Task Register(PersonalAttributes person);
         Task Marry(Guid spouse, string newLastName = null);
 
-        Task<string> FirstName { get; }
-        Task<string> LastName { get; }
-        Task<bool> IsMarried { get; }
+        Task<string> GetFirstName();
+        Task<string> GetLastName();
+        Task<bool> GetIsMarried();
     }
 }
