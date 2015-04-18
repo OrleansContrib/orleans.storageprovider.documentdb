@@ -3,7 +3,7 @@
   <Globals>
     <StorageProviders>
       <Provider Type="Orleans.Storage.MemoryStorage" Name="MemoryStore" />
-      <Provider Type="Orleans.StorageProvider.DocumentDB.DocumentDBStorageProvider" Name="DocumentDBStore" Url="https://your-account.documents.azure.com:443/" Key="your-key" Database="Orleans"/>
+      <Provider Type="Orleans.StorageProvider.DocumentDB.DocumentDBStorageProvider" Name="DocumentDBStore" Url="https://42pence.documents.azure.com:443/" Key="gH55Qv5xOv4E6dlS1mirF0Jf12CNQTfoaQ/XFfyn5mJZ+D0z7Vs8Flg08yduCcFv7M9Is1MpizKlU0NAZ0384w==" Database="Orleans"/>
     </StorageProviders>
     <SeedNode Address="localhost" Port="11111" />
   </Globals>
