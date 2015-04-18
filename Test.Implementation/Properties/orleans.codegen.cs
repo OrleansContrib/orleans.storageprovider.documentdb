@@ -25,7 +25,7 @@ namespace Test.Implementation
     using System.Runtime.Serialization;
     
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Orleans-CodeGenerator", "1.0.970.29197")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Orleans-CodeGenerator", "1.0.0.0")]
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute()]
     [SerializableAttribute()]
     [global::Orleans.CodeGeneration.GrainStateAttribute("Test.Implementation.Test.Implementation.Person")]
@@ -33,24 +33,24 @@ namespace Test.Implementation
     {
         
 
-            public String FirstName { get; set; }
+            public String @FirstName { get; set; }
 
-            public String LastName { get; set; }
+            public String @LastName { get; set; }
 
-            public Boolean IsMarried { get; set; }
+            public Boolean @IsMarried { get; set; }
 
             public override void SetAll(System.Collections.Generic.IDictionary<string,object> values)
             {   
                 object value;
                 if (values == null) { InitStateFields(); return; }
-                if (values.TryGetValue("FirstName", out value)) FirstName = (String) value;
-                if (values.TryGetValue("LastName", out value)) LastName = (String) value;
-                if (values.TryGetValue("IsMarried", out value)) IsMarried = (Boolean) value;
+                if (values.TryGetValue("FirstName", out value)) @FirstName = (String) value;
+                if (values.TryGetValue("LastName", out value)) @LastName = (String) value;
+                if (values.TryGetValue("IsMarried", out value)) @IsMarried = (Boolean) value;
             }
 
             public override System.String ToString()
             {
-                return System.String.Format("PersonState( FirstName={0} LastName={1} IsMarried={2} )", FirstName, LastName, IsMarried);
+                return System.String.Format("PersonState( FirstName={0} LastName={1} IsMarried={2} )", @FirstName, @LastName, @IsMarried);
             }
         
         public PersonState() : 

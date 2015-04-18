@@ -1,24 +1,32 @@
-﻿//*********************************************************
-//    Copyright (c) Microsoft. All rights reserved.
-//    
-//    Apache 2.0 License
-//    
-//    You may obtain a copy of the License at
-//    http://www.apache.org/licenses/LICENSE-2.0
-//    
-//    Unless required by applicable law or agreed to in writing, software 
-//    distributed under the License is distributed on an "AS IS" BASIS, 
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
-//    implied. See the License for the specific language governing 
-//    permissions and limitations under the License.
-//
-//*********************************************************
+﻿/*
+Project Orleans Cloud Service SDK ver. 1.0
+ 
+Copyright (c) Microsoft Corporation
+ 
+All rights reserved.
+ 
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
+associated documentation files (the ""Software""), to deal in the Software without restriction,
+including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 using System;
 using System.Net;
 
-using Orleans.Host;
+using Orleans.Runtime.Host;
 
-namespace Test.Client
+namespace Test
 {
     internal class OrleansHostWrapper : IDisposable
     {
@@ -28,7 +36,7 @@ namespace Test.Client
             set { siloHost.Debug = value; }
         }
 
-        private OrleansSiloHost siloHost;
+        private SiloHost siloHost;
 
         public OrleansHostWrapper(string[] args)
         {
@@ -48,11 +56,11 @@ namespace Test.Client
 
                 if (ok)
                 {
-                    Console.WriteLine(string.Format("Successfully started Orleans silo '{0}' as a {1} node.", siloHost.SiloName, siloHost.SiloType));
+                    Console.WriteLine(string.Format("Successfully started Orleans silo '{0}' as a {1} node.", siloHost.Name, siloHost.Type));
                 }
                 else
                 {
-                    throw new SystemException(string.Format("Failed to start Orleans silo '{0}' as a {1} node.", siloHost.SiloName, siloHost.SiloType));
+                    throw new SystemException(string.Format("Failed to start Orleans silo '{0}' as a {1} node.", siloHost.Name, siloHost.Type));
                 }
             }
             catch (Exception exc)
@@ -73,7 +81,7 @@ namespace Test.Client
             {
                 siloHost.StopOrleansSilo();
 
-                Console.WriteLine(string.Format("Orleans silo '{0}' shutdown.", siloHost.SiloName));
+                Console.WriteLine(string.Format("Orleans silo '{0}' shutdown.", siloHost.Name));
             }
             catch (Exception exc)
             {
@@ -92,7 +100,6 @@ namespace Test.Client
 
         private bool ParseArguments(string[] args)
         {
-            bool debug = false;
             string deploymentId = null;
 
             string configFileName = "DevTestServerConfiguration.xml";
@@ -112,9 +119,6 @@ namespace Test.Client
                         case "-help":
                             // Query usage help
                             return false;
-                        case "/debug":
-                            debug = true;
-                            break;
                         default:
                             Console.WriteLine("Bad command line arguments supplied: " + a);
                             return false;
@@ -161,7 +165,7 @@ namespace Test.Client
                 }
             }
 
-            siloHost = new OrleansSiloHost(siloName);
+            siloHost = new SiloHost(siloName);
             siloHost.ConfigFileName = configFileName;
             if (deploymentId != null)
                 siloHost.DeploymentId = deploymentId;
@@ -173,13 +177,12 @@ namespace Test.Client
         {
             Console.WriteLine(
 @"USAGE: 
-    OrleansHost.exe [<siloName> [<configFile>]] [DeploymentId=<idString>] [/debug]
+    orleans host [<siloName> [<configFile>]] [DeploymentId=<idString>] [/debug]
 Where:
     <siloName>      - Name of this silo in the Config file list (optional)
     <configFile>    - Path to the Config file to use (optional)
     DeploymentId=<idString> 
-                    - Which deployment group this host instance should run in (optional)
-    /debug          - Turn on extra debug output during host startup (optional)");
+                    - Which deployment group this host instance should run in (optional)");
         }
 
         public void Dispose()

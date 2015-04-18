@@ -15,7 +15,7 @@ namespace Orleans.StorageProvider.DocumentDB
     class DocumentDBStorageProvider : IStorageProvider
     {
         public string Name { get; set; }
-        public OrleansLogger Log { get; set; }
+        public Logger Log { get; set; }
 
         private DocumentClient Client { get; set; }
         private Database Database { get; set; }

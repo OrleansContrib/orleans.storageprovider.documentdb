@@ -30,7 +30,7 @@ namespace Test.Interfaces
     using System.Collections;
     
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Orleans-CodeGenerator", "1.0.970.29197")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Orleans-CodeGenerator", "1.0.0.0")]
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute()]
     public class PersonFactory
     {
@@ -52,7 +52,7 @@ namespace Test.Interfaces
                 return PersonReference.Cast(grainRef);
             }
         
-        [System.CodeDom.Compiler.GeneratedCodeAttribute("Orleans-CodeGenerator", "1.0.970.29197")]
+        [System.CodeDom.Compiler.GeneratedCodeAttribute("Orleans-CodeGenerator", "1.0.0.0")]
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute()]
         [System.SerializableAttribute()]
         [global::Orleans.CodeGeneration.GrainReferenceAttribute("Test.Interfaces.Test.Interfaces.IPerson")]
@@ -84,7 +84,7 @@ namespace Test.Interfaces
                 }
             }
             
-            protected override string InterfaceName
+            public override string InterfaceName
             {
                 get
                 {
@@ -123,16 +123,16 @@ namespace Test.Interfaces
                 return PersonMethodInvoker.GetMethodName(interfaceId, methodId);
             }
             
-            System.Threading.Tasks.Task Test.Interfaces.IPerson.Register(Test.Interfaces.PersonalAttributes person)
+            System.Threading.Tasks.Task Test.Interfaces.IPerson.Register(Test.Interfaces.PersonalAttributes @person)
             {
 
-                return base.InvokeMethodAsync<object>(-1544510960, new object[] {person} );
+                return base.InvokeMethodAsync<object>(-1544510960, new object[] {@person} );
             }
             
-            System.Threading.Tasks.Task Test.Interfaces.IPerson.Marry(System.Guid spouse, string newLastName)
+            System.Threading.Tasks.Task Test.Interfaces.IPerson.Marry(System.Guid @spouse, string @newLastName)
             {
 
-                return base.InvokeMethodAsync<object>(-516276551, new object[] {spouse, newLastName} );
+                return base.InvokeMethodAsync<object>(-516276551, new object[] {@spouse, @newLastName} );
             }
             
             System.Threading.Tasks.Task<string> Test.Interfaces.IPerson.GetFirstName()
@@ -155,7 +155,7 @@ namespace Test.Interfaces
         }
     }
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Orleans-CodeGenerator", "1.0.970.29197")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Orleans-CodeGenerator", "1.0.0.0")]
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute()]
     [global::Orleans.CodeGeneration.MethodInvokerAttribute("Test.Interfaces.Test.Interfaces.IPerson", -627797884)]
     internal class PersonMethodInvoker : global::Orleans.CodeGeneration.IGrainMethodInvoker
@@ -173,7 +173,7 @@ namespace Test.Interfaces
         {
 
             try
-            {{                    if (grain == null) throw new System.ArgumentNullException("grain");
+            {                    if (grain == null) throw new System.ArgumentNullException("grain");
                 switch (interfaceId)
                 {
                     case -627797884:  // IPerson
@@ -200,13 +200,13 @@ namespace Test.Interfaces
                     default:
                         throw new System.InvalidCastException("interfaceId="+interfaceId);
                 }
-            }}
+            }
             catch(Exception ex)
-            {{
+            {
                 var t = new System.Threading.Tasks.TaskCompletionSource<object>();
                 t.SetException(ex);
                 return t.Task;
-            }}
+            }
         }
         
         public static string GetMethodName(int interfaceId, int methodId)
@@ -246,7 +246,7 @@ namespace Test.Interfaces
         }
     }
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Orleans-CodeGenerator", "1.0.970.29197")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Orleans-CodeGenerator", "1.0.0.0")]
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute()]
     [global::Orleans.CodeGeneration.RegisterSerializerAttribute()]
     internal class Test_Interfaces_PersonalAttributesSerialization
@@ -270,15 +270,15 @@ namespace Test.Interfaces
         public static void Serializer(object untypedInput, Orleans.Serialization.BinaryTokenStreamWriter stream, System.Type expected)
         {
             Test.Interfaces.PersonalAttributes input = ((Test.Interfaces.PersonalAttributes)(untypedInput));
-            Orleans.Serialization.SerializationManager.SerializeInner(input.FirstName, stream, typeof(String));
-            Orleans.Serialization.SerializationManager.SerializeInner(input.LastName, stream, typeof(String));
+            Orleans.Serialization.SerializationManager.SerializeInner(input.FirstName, stream, typeof(string));
+            Orleans.Serialization.SerializationManager.SerializeInner(input.LastName, stream, typeof(string));
         }
         
         public static object Deserializer(System.Type expected, global::Orleans.Serialization.BinaryTokenStreamReader stream)
         {
             Test.Interfaces.PersonalAttributes result = new Test.Interfaces.PersonalAttributes();
-            result.FirstName = ((String)(Orleans.Serialization.SerializationManager.DeserializeInner(typeof(String), stream)));
-            result.LastName = ((String)(Orleans.Serialization.SerializationManager.DeserializeInner(typeof(String), stream)));
+            result.FirstName = ((string)(Orleans.Serialization.SerializationManager.DeserializeInner(typeof(string), stream)));
+            result.LastName = ((string)(Orleans.Serialization.SerializationManager.DeserializeInner(typeof(string), stream)));
             return result;
         }
         

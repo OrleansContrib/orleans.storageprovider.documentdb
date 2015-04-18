@@ -1,18 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8B8CE994-8B18-4FAE-904E-6D253B7E02F7}</ProjectGuid>
+    <ProjectGuid>{F5769F97-DC1C-4F26-A519-992919454C50}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Test.Client</RootNamespace>
-    <AssemblyName>Test.Client</AssemblyName>
+    <RootNamespace>Test.SiloHost</RootNamespace>
+    <AssemblyName>Test.SiloHost</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,10 +31,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>
-    </StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -68,17 +63,12 @@
     </Content>
     <Content Include="DevTestServerConfiguration.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Orleans.StorageProvider.DocumentDB\Orleans.StorageProvider.DocumentDB.csproj">
       <Project>{02bd55cb-2f1c-42ed-a782-aa11e2060423}</Project>
       <Name>Orleans.StorageProvider.DocumentDB</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Test.Implementation\Test.Implementation.csproj">
-      <Project>{09334d17-203e-455d-b6b2-36138f51044e}</Project>
-      <Name>Test.Implementation</Name>
     </ProjectReference>
     <ProjectReference Include="..\Test.Interfaces\Test.Interfaces.csproj">
       <Project>{08ee195c-5936-42de-a667-2a8ded9b281d}</Project>
