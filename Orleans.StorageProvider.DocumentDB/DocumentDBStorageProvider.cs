@@ -1,67 +1,81 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Azure.Documents;
+﻿using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
-using Microsoft.Azure.Documents.Linq;
-using Newtonsoft.Json;
 using Orleans.Runtime;
 using Orleans.Storage;
+using System;
+using System.Threading.Tasks;
 
 namespace Orleans.StorageProvider.DocumentDB
 {
+
+    // TODO: Ensure collection exists
+    // TODO: CI
+    // TODO: Testing
+    // TODO: Nuget
+    // TODO: readme
+    // TODO: extension method for registering the provider
+
+
     class DocumentDBStorageProvider : IStorageProvider
     {
+        private string databaseName;
+        private string collectionName;
+
         public string Name { get; set; }
         public Logger Log { get; set; }
 
         private DocumentClient Client { get; set; }
-        private Database Database { get; set; }
 
         public async Task Init(string name, Providers.IProviderRuntime providerRuntime, Providers.IProviderConfiguration config)
         {
             try
             {
+                this.Name = name;
                 var url = config.Properties["Url"];
                 var key = config.Properties["Key"];
-                var databaseName = config.Properties["Database"];
+                this.databaseName = config.Properties["Database"];
+                this.collectionName = config.Properties["Collection"];
                 
                 this.Client = new DocumentClient(new Uri(url), key);
-
-                var databases = await this.Client.ReadDatabaseFeedAsync();
-                this.Database = databases.Where(d => d.Id == databaseName).FirstOrDefault()
-                    ?? await this.Client.CreateDatabaseAsync(new Database { Id = databaseName });
             }
             catch (Exception ex)
             {
                 Log.Error(0, "Error in Init.", ex);
+                throw;
             }
         }
 
         public Task Close()
         {
-            this.Client.Dispose();
+            if (null != this.Client) this.Client.Dispose();
 
             return TaskDone.Done;
+        }
+
+        Uri GenerateUri(string grainType, GrainReference reference)
+        {
+            return UriFactory.CreateDocumentUri(databaseName, collectionName, reference.ToKeyString());
         }
 
         public async Task ReadStateAsync(string grainType, GrainReference grainReference, IGrainState grainState)
         {
             try
             {
-                var collection = await this.EnsureCollection(grainType);
-                var documents = await this.Client.ReadDocumentFeedAsync(collection.DocumentsLink);
-                var documentId = grainReference.ToKeyString();
-                GrainStateDocument document = documents.Where(d => d.Id == documentId).FirstOrDefault();
 
-                if(document != null)
-                    grainState.SetAll(document.State);
+                var uri = GenerateUri(grainType, grainReference);
+                Document readDoc = await this.Client.ReadDocumentAsync(uri);
+
+                if (null != readDoc)
+                {
+                    grainState.ETag = readDoc.ETag;
+                    grainState.State = readDoc.GetPropertyValue<object>("state");
+                }
+
             }
             catch (Exception ex)
             {
                 Log.Error(0, "Error in ReadStateAsync", ex);
+                throw;
             }            
         }
 
@@ -69,26 +83,27 @@ namespace Orleans.StorageProvider.DocumentDB
         {
             try
             {
-                var collection = await this.EnsureCollection(grainType);
-                var documents = await this.Client.ReadDocumentFeedAsync(collection.DocumentsLink);
-                var documentId = grainReference.ToKeyString();
+                var uri = GenerateUri(grainType, grainReference);
+                var document = new Document();
 
-                var document = documents.Where(d => d.Id == documentId).FirstOrDefault();
+                document.SetPropertyValue("state", grainState.State);
 
-                if(document != null)
+                if (null != grainState.ETag)
                 {
-                    document.State = grainState.AsDictionary();
-                    await this.Client.ReplaceDocumentAsync(document);
+                    var ac = new AccessCondition { Condition = grainState.ETag, Type = AccessConditionType.IfMatch };
+                    await this.Client.ReplaceDocumentAsync(uri, document, new RequestOptions { AccessCondition = ac });
                 }
                 else
                 {
-                    await this.Client.CreateDocumentAsync(collection.DocumentsLink,
-                        new GrainStateDocument { Id = documentId, State = grainState.AsDictionary() });
+                    Document newDoc = await this.Client.CreateDocumentAsync(uri, document);
+                    grainState.ETag = newDoc.ETag;
                 }
+
             }
             catch (Exception ex)
             {
                 Log.Error(0, "Error in WriteStateAsync", ex);
+                throw;
             }
         }
 
@@ -96,31 +111,19 @@ namespace Orleans.StorageProvider.DocumentDB
         {
             try
             {
-                var collection = await this.EnsureCollection(grainType);
-                var document = this.Client.CreateDocumentQuery(collection.DocumentsLink).Where(d => d.Id == grainReference.ToKeyString()).AsEnumerable().FirstOrDefault();
-
-                if(document != null)
-                    await this.Client.DeleteDocumentAsync(document.SelfLink);
+                var uri = GenerateUri(grainType, grainReference);
+                await this.Client.DeleteDocumentAsync(uri);
+                grainState.State = null;
+                grainState.ETag = null;
             }
             catch (Exception ex)
             {
                 Log.Error(0, "Error in ClearStateAsync", ex);
+                throw;
             }
         }
 
-        private async Task<DocumentCollection> EnsureCollection(string collectionId)
-        {
-            var collections = await this.Client.ReadDocumentCollectionFeedAsync(this.Database.CollectionsLink);
-            
-            return collections.Where(c => c.Id == collectionId).FirstOrDefault()
-                ?? await this.Client.CreateDocumentCollectionAsync(this.Database.SelfLink, new DocumentCollection { Id = collectionId });
-        }
+      
 
-        private class GrainStateDocument
-        {
-            [JsonProperty("id")]
-            public string Id;
-            public IDictionary<string, object> State;
-        }
     }
 }

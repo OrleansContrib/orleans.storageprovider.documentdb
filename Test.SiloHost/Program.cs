@@ -59,7 +59,7 @@ namespace Test
 
         static void Test()
         {
-            var maleGrain = GrainFactory.GetGrain<IPerson>(1);
+            var maleGrain = GrainClient.GrainFactory.GetGrain<IPerson>(1);
 
             // If the name is set, we've run this code before.
             if (maleGrain.GetFirstName().Result == null)
@@ -75,7 +75,7 @@ namespace Test
                     maleGrain.GetIsMarried().Result);
             }
 
-            var femaleGrain = GrainFactory.GetGrain<IPerson>(2);
+            var femaleGrain = GrainClient.GrainFactory.GetGrain<IPerson>(2);
 
             // If the name is set, we've run this code before.
             if (femaleGrain.GetFirstName().Result == null)
