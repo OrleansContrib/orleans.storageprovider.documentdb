@@ -43,7 +43,7 @@ namespace Orleans.StorageProvider.DocumentDB.Tests
         private static void InitSilo(string[] args)
         {
             var config = ClusterConfiguration.LocalhostPrimarySilo();
-            config.Globals.RegisterDocumentDBProvider("DocDB", "https://xxx.documents.azure.com:443/", "xxx", "xxx", "Items");
+            config.Globals.RegisterDocumentDBProvider("DocDB", "https://ra-cosmos-test.documents.azure.com:443/", "XXX", "ra-cosmos-test", "Items");
             siloHost = new SiloHost("Primary", config );
 
             siloHost.InitializeOrleansSilo();

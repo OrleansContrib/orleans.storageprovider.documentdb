@@ -37,6 +37,18 @@ namespace Orleans.StorageProvider.DocumentDB
                 this.collectionName = config.Properties["Collection"];
                 
                 this.Client = new DocumentClient(new Uri(url), key);
+
+                await this.Client.CreateDatabaseAsync(new Database { Id = this.databaseName });
+
+                var myCollection = new DocumentCollection
+                {
+                    Id = this.collectionName
+                };
+                await this.Client.CreateDocumentCollectionAsync(
+                    UriFactory.CreateDatabaseUri(this.databaseName),
+                    myCollection,
+                    new RequestOptions { /*OfferThroughput = 20000 */});
+
             }
             catch (Exception ex)
             {
